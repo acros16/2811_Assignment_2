@@ -29,6 +29,7 @@ export class LoginComponent implements OnInit {
       username: this.username,
       password: this.password
     }
+    sessionStorage.setItem('username', this.username);
     
     this._userService.login(user).subscribe(
       data => { 

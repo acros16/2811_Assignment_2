@@ -5,7 +5,11 @@ const app = express();
 const fs = require('fs');
 const dataFile = './data.json';
 const dataFormat = 'utf8';
-
+// HTTP Listener
+const server = app.listen(3000, function(){
+    console.log('Server runing');
+})
+const io = require('socket.io').listen(server);
 
 // CORS
 // We are enabling CORS so that our 'ng serve' Angular server can still access
@@ -124,11 +128,21 @@ app.post('/api/group/create', function(req, res){
         });
     }
 })
- 
 
+console.log("Server Socket Initialized");
+//Respond to connection request
+io.on('connection',(socket)=>{
+    console.log('User Connection');
+    //Respond to disconnect request
+    socket.on('disconnect', function(){
+        console.log('User Disconnected');
+    });
+    //Respond to getting a new message
+    socket.on('add-message',(message)=>{
+        //Broadcast the message to all others that are connected to this socket
+        console.log(message);
+        io.emit('message',{type:'message',text:message});
+    });
+});   
 
-// HTTP Listener
-app.listen(3000, function(){
-    console.log('Server runing');
-})
 module.exports = app;
