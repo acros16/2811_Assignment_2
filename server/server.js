@@ -41,15 +41,20 @@ app.post('/api/login', function(req, res){
     fs.readFile(dataFile, dataFormat, function(err, data){
         data = JSON.parse(data);
         let username = req.body.username; 
+        let password = req.body.password;
         login.data = data;
         let match = login.findUser(username);
+        if (password !== '123')
+        {
+            match = false;
+        }
     
         // Check to see if we have a match, get groups if true
         if(match !== false){
             groups.data = data;
             match.groups = groups.getGroups(username, match.permissions);
+            console.log(match.groups[0].channels[0]);
         }
-        console.log(match.groups[0].channels[0]);
         res.send(match);
     });
 });
