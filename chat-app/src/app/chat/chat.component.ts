@@ -28,6 +28,5 @@ export class ChatComponent implements OnInit {
     //Send a chat message back to the server.
     console.log("message: "+this.message);
     this.sockServ.sendMessage("["+this.username+"]\t"+this.message);
-    //this.message = '';
   }
 }

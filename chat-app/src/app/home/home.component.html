@@ -90,6 +90,21 @@
               {{ member }}
             </p>
         </ng-container>
+        <div>
+          <form (submit)="addUser($event)">
+            Add a user<br>
+            <input [(ngModel)]="add_user" name="add_user" type="text" placeholder="Username">
+            <input [(ngModel)]="perms" name="perms" type="text" placeholder="Permissions (0-2)">
+            <button type="submit">Add</button>
+          </form>
+        </div>
+        <div>
+          <form (submit)="removeUser($event)">
+            Remove a user<br>
+            <input [(ngModel)]="del_user" name="del_user" type="text" placeholder="Username">
+            <button type="submit">Remove</button>
+          </form>
+        </div>
       </div>
     </div>
 </div>

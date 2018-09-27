@@ -1,10 +1,12 @@
 const express = require('express');
 const bodyParser = require('body-parser');
+const assert = require('assert');
 const path = require('path');
 const app = express(); 
 const fs = require('fs');
 const dataFile = './data.json';
 const dataFormat = 'utf8';
+const MongoClient = require('mongodb').MongoClient;
 // HTTP Listener
 const server = app.listen(3000, function(){
     console.log('Server runing');
@@ -129,6 +131,63 @@ app.post('/api/group/create', function(req, res){
     }
 })
 
+// Connection URL
+const url = 'mongodb://localhost:27017';
+
+// Database Name
+const dbName = 'mydb';
+
+// Use connect method to connect to the server
+MongoClient.connect(url, {poolSize:10}, function(err, client) {
+  assert.equal(null, err);
+  console.log("Connected successfully to server");
+
+  const db = client.db(dbName);
+
+  app.post('/api/add', function(req,res){
+    const collection = db.collection('users');
+    const assert = require('assert');
+    let user = req.body.user;
+    let perms = req.body.perms;
+    // Insert some documents
+    collection.insertOne({username : user, permissions : perms}, 
+        function(err, result) {
+            assert.equal(err, null);
+            assert.equal(1, result.result.n);
+            assert.equal(1, result.ops.length);
+            console.log("Inserted " + user + " into the collection");
+            res.send(true);
+        });
+  });
+  //app.post('/api/update', function(){
+    //require('./routes/update.js')(app,db,callback);
+  //})
+  app.post('/api/remove', function(req,res){
+    // Get the documents collection
+    const collection = db.collection('users');
+    const assert = require('assert');
+    let user = req.body.user;
+    // Delete document for 1 user
+    collection.deleteOne({username : user}, function(err, result) {
+      assert.equal(err, null);
+      assert.equal(1, result.result.n);
+      console.log("Removed the document for "+user);
+      res.send(true);
+    });    
+  });
+  app.post('/api/read', function(){
+    // Get the documents collection
+    const collection = db.collection('users');
+    const assert = require('assert');
+    // Find some documents
+    collection.find({}).toArray(function(err, docs) {
+      assert.equal(err, null);
+      console.log("Found the following records");
+      console.log(JSON.stringify(docs));
+      res.send(docs);
+    });
+  });
+})
 console.log("Server Socket Initialized");
 //Respond to connection request
 io.on('connection',(socket)=>{
@@ -143,6 +202,10 @@ io.on('connection',(socket)=>{
         console.log(message);
         io.emit('message',{type:'message',text:message});
     });
+
+    socket.on('add-image',(image)=>{
+        io.emit('image',{type:'image', image: image})
+    })
 });   
 
 module.exports = app;

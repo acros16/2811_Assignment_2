@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import {Router} from "@angular/router";
 import { GroupService } from '../group.service';
+import { UserService } from '../user.service';
 
 @Component({
   selector: 'app-home',
@@ -9,13 +10,16 @@ import { GroupService } from '../group.service';
 })
 export class HomeComponent implements OnInit {
   public user;
+  public add_user;
+  public del_user;
+  public perms;
   public selectedGroup;
   public selectedChannel;
   public groups = [];
   public channels = [];
   public newGroupName:String
 
-  constructor(private router: Router, private _groupService:GroupService) { }
+  constructor(private router: Router, private _groupService:GroupService, private _userService:UserService) { }
 
   ngOnInit() {
     if(sessionStorage.getItem('user') === null){
@@ -25,6 +29,7 @@ export class HomeComponent implements OnInit {
       let user = JSON.parse(sessionStorage.getItem('user'));
       this.user = user;
       console.log(this.user);
+      console.log(this.user.username);
       this.groups = user.groups;
       if(this.groups.length > 0){
         this.openGroup(this.groups[0].name);
@@ -34,7 +39,41 @@ export class HomeComponent implements OnInit {
       }
     }
   }
-
+  addUser(event){
+    event.preventDefault();
+    let new_user = {
+      user: this.add_user,
+      perms: this.perms
+    }
+    this._userService.add(new_user).subscribe(
+      data => {
+        console.log(data);
+        if (data != false){
+          console.log("Successfully added user");
+        }
+        else{
+          console.log("Could not add user!");
+        }
+      }
+    )
+  }
+  removeUser(event){
+    event.preventDefault();
+    let remove_user = {
+      user: this.del_user
+    }
+    this._userService.remove(remove_user).subscribe(
+      data => {
+        console.log(data);
+        if (data != false){
+          console.log("Successfully removed user");
+        }
+        else{
+          console.log("Could not remove user!");
+        }
+      }
+    )
+  }
   createGroup(event){
     event.preventDefault();
     let data = {'newGroupName': this.newGroupName};
