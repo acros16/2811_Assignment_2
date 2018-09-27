@@ -14,6 +14,9 @@ export class SocketService {
     console.log("working");
     this.socket.emit('add-message',message);
   }
+  sendImage(image){
+    this.socket.emit('add-image',image);
+  }
   getMessages(){
     let obmessages = new Observable(
       //observer is a javascrpt object that defines the handlers for the notifications we will receive
@@ -32,5 +35,20 @@ export class SocketService {
       }
     )
      return obmessages;
+  }
+  getImages(){
+    let obimages = new Observable(
+      observer =>{
+        this.socket = io("http://localhost:3000");
+        this.socket.on('image',(data)=>{
+          observer.next(data);
+        });
+
+        return()=>{
+          this.socket.disconnect();
+        }
+      }
+    )
+    return obimages;
   }
 }

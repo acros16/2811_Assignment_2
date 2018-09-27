@@ -5,14 +5,31 @@
   <div class="card-body" style="height: 500px; overflow-y:scroll">
     <div class="messages">
       <div *ngFor="let message of messages" class="card-text">
+        <img src={{prof_img}} width="32" height="32"/>
         {{message.text}}
+      </div>
+      <div *ngFor="let image of images" class="card-text">
+          <img [src]="image.text"/>
       </div>
     </div>
   </div>
   <div class="card-footer text-muted">
     <div class="form-inline">
-        <input [(ngModel)]="message" class="form-control" style="width:calc(100% - 100px)">
+        <input [(ngModel)]="message" class="form-control" style="width:calc(100% - 100px)" placeholder="Type your messages here!">
         <button (click) = "sendMessage()" class="btn btn-primary" style="width:100px">enter</button>
+        <input [(ngModel)]="image" name="image" class="form-control" style="width:calc(100% - 100px)"placeholder="Enter an image link to post images!">
+        <button (click) = "sendImage()" class="btn btn-primary" style="width:100px">enter</button>
+    </div>
+    <div>
+      Change your profile images!<br>
+      <img src="https://d1nhio0ox7pgb.cloudfront.net/_img/g_collection_png/standard/256x256/person.png" width="128" height="128" />
+      <button (click) = "changeProf()" style="width:100px">This one!</button>
+      <img src="http://icons.iconarchive.com/icons/graphicloads/flat-finance/256/person-icon.png" width="128" height="128" style="margin-left:4em"/>
+      <button (click) = "changeProf1()" style="width:100px">This one!</button><br>
+      <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT3hR-seMSWq5eEBfRqLgOxyOOPJOsvATM6nPv3-XxlA0U9ctWcIQ" width="128" height="128"/>
+      <button (click) = "changeProf2()" style="width:100px">This one!</button>
+      <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT1wWcsKlLqfPJ0xggFfVqMiOlfVO-Sm9k4OnsfA25ktwKSsUGVmg" width="128" height="128" style="margin-left:4em"/>
+      <button (click) = "changeProf3()" style="width:100px">This one!</button>
     </div>
   </div>
 </div>

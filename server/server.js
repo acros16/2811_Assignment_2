@@ -204,6 +204,11 @@ io.on('connection',(socket)=>{
     });
 
     socket.on('add-image',(image)=>{
+        console.log(image);
+        io.emit('image',{type:'image',text:image});
+    })
+
+    socket.on('add-image',(image)=>{
         io.emit('image',{type:'image', image: image})
     })
 });   
